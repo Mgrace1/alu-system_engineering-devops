@@ -1,0 +1,39 @@
+#!/usr/bin/env bash
+# Install nginx web server
+
+apt-get update
+apt-get install -y nginx
+
+# Create directories and files
+mkdir -p /etc/nginx/html
+touch /etc/nginx/html/index.html
+echo "Holberton School" > /etc/nginx/html/index.html
+
+# Create custom 404 error page
+cat <<EOT >/etc/nginx/html/404.html
+Ceci n'est pas une page
+EOT
+
+# Configure nginx server block
+cat <<EOT >/etc/nginx/sites-available/default
+server {
+    listen 80 default_server;
+    listen [::]:80 default_server;
+    root /etc/nginx/html;
+    index index.html index.htm;
+    error_page 404 /404.html;
+    location /404 {
+        internal;
+    }
+}
+EOT
+
+# Restart nginx service
+sudo service nginx restart
+
+# Test server block configuration
+if curl --silent --fail http://localhost:80/xyzfoo | grep -q "Ceci n'est pas une page"; then
+    echo "Ceci n'est pas une page"
+else
+    echo "Server block configuration test failed"
+fi
