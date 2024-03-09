@@ -23,3 +23,10 @@ EOF'
 # Restart Nginx
 sudo systemctl restart nginx
 
+# Check if the custom header is added
+response=$(curl -sI localhost | grep X-Served-By)
+echo "[Got]"
+echo "$response"
+echo "[Expected]"
+echo "#"
+
